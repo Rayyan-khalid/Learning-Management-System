@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import { dummyCourses } from "../assets/assets";
 import { useNavigate } from "react-router-dom";
+import humanizeDuration from "humanize-duration";
 
 export const AppContext = createContext()
 
@@ -10,6 +11,7 @@ export const AppContextProvider = (props)=>{
     const navigate = useNavigate();
 
     const [allCourses, setAllCourses] = useState([])
+    
     const [isEducator, setIsEducator] = useState(true)
 
     // Fetch All Courses
@@ -29,6 +31,35 @@ export const AppContextProvider = (props)=>{
         return totalRating / course.courseRatings.length
      }
 
+     // Function to Calculate Course Chapter Time
+
+     const calculateChapterTime = (chapter) => {
+        let time = 0
+        chapter.chapterContent.map((lecture)=> time += lecture.lectureDuration)
+        return humanizeDuration(time * 60 * 1000, {units : ["h","m"]})
+     }
+
+     // Function to calculate Course Duration
+     const calculateCourseDuration = ()=>{
+        let time = 0
+
+        course.courseContent.map((chapter)=> chapter.chapterContent.map(
+            (lecture) => time += lecture.lectureDuration 
+        ))
+        return humanizeDuration(time * 60 * 1000, {units : ["h","m"]})
+     }
+        //Function calculate to No of lectures in the course
+
+        const calculateNoOfLectures = (course)=>{
+            let totalLectures = 0;
+            course.courseContent.forEach(chapter =>{
+                if(Array.isArray(chapterContent)){
+                    totalLectures += chapter.chapterContent.length
+                }
+            });
+            return totalLectures;
+        }
+
     useEffect(()=>{
         fetchAllCourses()
     },[])
@@ -39,7 +70,10 @@ export const AppContextProvider = (props)=>{
         navigate,
         calculateRating,
         isEducator,
-        setIsEducator
+        setIsEducator,
+        calculateNoOfLectures,
+        calculateChapterTime,
+        calculateCourseDuration 
         
     }
     return (
