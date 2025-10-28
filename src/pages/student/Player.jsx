@@ -23,6 +23,7 @@ const Player = () => {
     })
   }
 
+
 const toggleSection = (index) => {
     setOpenSections((prev)=>(
       {...prev,
@@ -36,9 +37,19 @@ const toggleSection = (index) => {
     getCourseData()
   },[])
 
+
+
+// console.log("URL courseId (useParams):", courseId);
+// console.log("ENROLLED COURSES (length):", enrolledCourses?.length);
+// console.table(enrolledCourses?.map(c => ({ id: c._id, idType: typeof c._id, title: c.courseTitle })));
+console.log("playerData (raw):", playerData);
+console.log("playerData keys:", playerData && Object.keys(playerData));
+
+
+
   return (
     <>
-      <div className="p-4 sm:p-10 flex flex-col-reverse ms:grid md:grid-cols-2 gap-10 md:px-36">
+      <div className="p-4 sm:p-10 flex flex-col-reverse md:grid md:grid-cols-2 gap-10 md:px-36">
         {/* left Column */}
         <div className="text-gray-800">
           <h2 className="text-xl font-semibold">Course Structure</h2>
@@ -113,7 +124,7 @@ const toggleSection = (index) => {
               </div>
             ))}
           </div>
-          <div className="flex items-centergap-2 py-3 mt-10">
+          <div className="flex items-center gap-2 py-3 mt-10">
             <h1 className="text-xl font-bold">Rate this course :</h1>
             <Rating initialRating={0}/>
           </div>
@@ -132,7 +143,7 @@ const toggleSection = (index) => {
             </div>
           )
           :
-          <img src={courseData ? courseData.courseThumbnail : ''} alt="" />
+          (courseData && <img src={courseData.courseThumbnail} alt="Course thumbnail" />)
           }
         </div>
       </div>
