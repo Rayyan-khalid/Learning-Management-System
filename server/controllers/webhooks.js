@@ -7,12 +7,13 @@ import User from '../models/User.js'
 
 export const clerkWebhooks = async (req, res)=>{
     try {
-        const whook = new webhook(process.env.CLERK_WEBHOOK_SECRET)
+        const whook = new Webhook(process.env.CLERK_WEBHOOK_SECRET)
         // This line is the security check.
         await whook.verify(JSON.stringify(req.body), {
             "svix-id": req.headers["svix-id"],
-            "svix-timestamp": req.headers["svix-signature"],
+            "svix-timestamp": req.headers["svix-timestamp"],
             "svix-signature": req.headers["svix-signature"]
+
         })
 
         const {data, type} = req.body
@@ -26,15 +27,15 @@ export const clerkWebhooks = async (req, res)=>{
                     imageUrl: data.image_url,
                 }
                 await User.create(userData)
-                res.JSON({})
+                res.json({})
                 
                 break;
             }
 
             case 'user.updated' : {
                 const userData = {
-                    email: data.email_address[0].email_address,
-                    name: data.first_name + " " + data.last_namw,
+                    email: data.email_addresses[0].email_address,
+                    name: data.first_name + " " + data.last_name,
                     imageUrl: data.image_url,
                 }
                 await User.findByIdAndUpdate(data.id,userData)
