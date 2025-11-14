@@ -2,6 +2,8 @@ import pkg from "svix";
 const { Webhook } = pkg;
 
 import User from '../models/User.js'
+import Stripe from "stripe";
+import { request } from "express";
 
 //API contoller Function to manage Clerk User with databse
 
@@ -55,5 +57,21 @@ export const clerkWebhooks = async (req, res)=>{
 
     } catch (error) {
         res.json({success: false, message: error.message})
+    }
+}
+
+
+
+//Stripe webhooks
+
+const stripeInstance = new Stripe(process.env.STRIPE_SECRET_KEY)
+
+export const stripeWebhooks = async(req, res) =>{
+    const sig = req.headers['stripe-signature']
+    let event;
+    try {
+        event = Stripe.wwebhooks.constructEvent(request.body, sig, process.env.STRIPE_WEBKOOK_SECRET);
+    } catch (error) {
+        res.json(400).send(`Webhook Error: ${error.message}`)
     }
 }
